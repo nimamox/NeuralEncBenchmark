@@ -7,7 +7,6 @@ from .torch_device import device, dtype
 from .surrogate_model import run_snn
 
 def train(encoded_data, val_enc_data, nb_hidden, params, alpha, beta, lr=2e-3, nb_epochs=10, return_weights=False):
-    params = [w1, w2]
     optimizer = torch.optim.Adam(params, lr=lr, betas=(0.9,0.999))
 
     log_softmax_fn = nn.LogSoftmax(dim=1)
