@@ -30,6 +30,24 @@ def load_mnist():
             'y_train': y_train_mnist, 'y_test':y_test_mnist,
             'train_dataset': train_mnist_dataset, 'test_dataset': test_mnist_dataset}
 
+def load_fmnist():
+    root_fmnist = os.path.expanduser("~/data/datasets/torch/fashion-mnist")
+    train_fmnist_dataset = tv.datasets.FashionMNIST(root_fmnist, train=True, transform=None, target_transform=None, download=True)
+    test_fmnist_dataset = tv.datasets.FashionMNIST(root_fmnist, train=False, transform=None, target_transform=None, download=True)
+    
+    x_train_fmnist = np.array(train_fmnist_dataset.data, dtype=np.float)
+    x_train_fmnist = x_train_fmnist.reshape(x_train_fmnist.shape[0],-1)/255
+    
+    x_test_fmnist = np.array(test_fmnist_dataset.data, dtype=np.float)
+    x_test_fmnist = x_test_fmnist.reshape(x_test_fmnist.shape[0],-1)/255
+    
+    y_train_fmnist = np.array(train_fmnist_dataset.targets, dtype=np.int)
+    y_test_fmnist  = np.array(test_fmnist_dataset.targets, dtype=np.int)    
+    
+    return {'x_train': x_train_fmnist, 'x_test': x_test_fmnist,
+            'y_train': y_train_fmnist, 'y_test':y_test_fmnist,
+            'train_dataset': train_fmnist_dataset, 'test_dataset': test_fmnist_dataset}
+
 def load_cifar10_gray():
     root_cifar = os.path.expanduser("~/data/datasets/torch/cifar")
     
