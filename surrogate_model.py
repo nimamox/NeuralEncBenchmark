@@ -42,8 +42,8 @@ spike_fn  = SurrGradSpike.apply
 
 
 
-def run_snn(inputs, batch_size, nb_hidden):
-    h1 = torch.einsum("abc,cd->abd", (inputs, w1))
+def run_snn(inputs, batch_size, nb_hidden, params, alpha, beta):
+    h1 = torch.einsum("abc,cd->abd", (inputs, params[0]))
     syn = torch.zeros((batch_size, nb_hidden), device=device, dtype=dtype)
     mem = torch.zeros((batch_size, nb_hidden), device=device, dtype=dtype)
 
@@ -71,7 +71,7 @@ def run_snn(inputs, batch_size, nb_hidden):
     spk_rec = torch.stack(spk_rec,dim=1)
 
     # Readout layer
-    h2= torch.einsum("abc,cd->abd", (spk_rec, w2))
+    h2= torch.einsum("abc,cd->abd", (spk_rec, params[1]))
     flt = torch.zeros((batch_size,nb_outputs), device=device, dtype=dtype)
     out = torch.zeros((batch_size,nb_outputs), device=device, dtype=dtype)
     out_rec = [out]
