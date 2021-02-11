@@ -27,7 +27,7 @@ def train(encoded_data, val_enc_data, nb_steps, params, alpha, beta, lr=2e-3, nb
     for e in range(nb_epochs):
         local_loss = []
         for x_local, y_local in sparse_generator(encoded_data):
-            output,_ = run_snn(x_local.to_dense(), encoded_data['batch_size'], nb_hidden, nb_outputs, nb_steps, params, alpha, beta)
+            output,_ = run_snn(x_local.to_dense(), encoded_data['batch_size'], nb_steps, params, alpha, beta)
             m,_=torch.max(output,1)
             log_p_y = log_softmax_fn(m)
             loss_val = loss_fn(log_p_y, y_local)
@@ -60,7 +60,7 @@ def train(encoded_data, val_enc_data, nb_steps, params, alpha, beta, lr=2e-3, nb
           # Validation accuracy
           accs = []
           for x_local, y_local in sparse_generator(val_enc_data):
-            output,_ = run_snn(x_local.to_dense(), val_enc_data['batch_size'], nb_hidden, nb_outputs, nb_steps, params, alpha, beta)
+            output,_ = run_snn(x_local.to_dense(), val_enc_data['batch_size'], nb_steps, params, alpha, beta)
             m,_ = torch.max(output,1) # max over time
             _, am = torch.max(m,1)      # argmax over output units
             tmp = np.mean((y_local==am).detach().cpu().numpy()) # compare to labels
@@ -80,7 +80,7 @@ def compute_classification_accuracy(encoded_data, nb_steps, params, alpha, beta)
     
     accs = []
     for x_local, y_local in sparse_generator(encoded_data, shuffle=False):
-        output,_ = run_snn(x_local.to_dense(), encoded_data['batch_size'], nb_hidden, nb_outputs, nb_steps, params, alpha, beta)
+        output,_ = run_snn(x_local.to_dense(), encoded_data['batch_size'], nb_steps, params, alpha, beta)
         m,_= torch.max(output,1) # max over time
         _, am = torch.max(m,1)      # argmax over output units
         tmp = np.mean((y_local==am).detach().cpu().numpy()) # compare to labels
