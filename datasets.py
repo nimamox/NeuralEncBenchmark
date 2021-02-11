@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import torch
 import torchvision as tv
 
@@ -22,3 +23,6 @@ def load_mnist():
     
     return {'x_train': x_train_mnist, 'x_test': x_test_mnist,
             'y_train': y_train_mnist, 'y_test':y_test_mnist}
+
+if __name__ == '__main__':
+    load_mnist()
