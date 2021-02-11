@@ -1,3 +1,5 @@
+import numpy as np
+
 def ISI_encoding(X_i, N=3):
 
     N_neurons = N # number of ISI encoding neurons
