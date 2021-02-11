@@ -43,7 +43,7 @@ spike_fn  = SurrGradSpike.apply
 
 
 
-def run_snn(inputs, batch_size, nb_hidden, params, alpha, beta):
+def run_snn(inputs, batch_size, nb_hidden, nb_steps, params, alpha, beta):
     h1 = torch.einsum("abc,cd->abd", (inputs, params[0]))
     syn = torch.zeros((batch_size, nb_hidden), device=device, dtype=dtype)
     mem = torch.zeros((batch_size, nb_hidden), device=device, dtype=dtype)

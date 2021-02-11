@@ -9,7 +9,7 @@ from .surrogate_encoder import encode_data
 from .sparse_data_generator import sparse_generator
 
 
-def train(encoded_data, val_enc_data, nb_hidden, params, alpha, beta, lr=2e-3, nb_epochs=10, return_weights=False):
+def train(encoded_data, val_enc_data, nb_hidden, nb_steps, params, alpha, beta, lr=2e-3, nb_epochs=10, return_weights=False):
     optimizer = torch.optim.Adam(params, lr=lr, betas=(0.9,0.999))
 
     log_softmax_fn = nn.LogSoftmax(dim=1)
@@ -24,7 +24,7 @@ def train(encoded_data, val_enc_data, nb_hidden, params, alpha, beta, lr=2e-3, n
     for e in range(nb_epochs):
         local_loss = []
         for x_local, y_local in sparse_generator(encoded_data):
-            output,_ = run_snn(x_local.to_dense(), encoded_data['batch_size'], nb_hidden, params, alpha, beta)
+            output,_ = run_snn(x_local.to_dense(), encoded_data['batch_size'], nb_hidden, nb_steps, params, alpha, beta)
             m,_=torch.max(output,1)
             log_p_y = log_softmax_fn(m)
             loss_val = loss_fn(log_p_y, y_local)
@@ -45,7 +45,7 @@ def train(encoded_data, val_enc_data, nb_hidden, params, alpha, beta, lr=2e-3, n
           # # Train accuracy
           # accs = []
           # for x_local, y_local in sparse_generator(encoded_data):
-          #   output,_ = run_snn(x_local.to_dense(), encoded_data['batch_size'], nb_hidden, params, alpha, beta)
+          #   output,_ = run_snn(x_local.to_dense(), encoded_data['batch_size'], nb_hidden, nb_steps, params, alpha, beta)
           #   m,_ = torch.max(output,1) # max over time
           #   _, am = torch.max(m,1)      # argmax over output units
           #   tmp = np.mean((y_local==am).detach().cpu().numpy()) # compare to labels
@@ -57,7 +57,7 @@ def train(encoded_data, val_enc_data, nb_hidden, params, alpha, beta, lr=2e-3, n
           # Validation accuracy
           accs = []
           for x_local, y_local in sparse_generator(val_enc_data):
-            output,_ = run_snn(x_local.to_dense(), val_enc_data['batch_size'], nb_hidden, params, alpha, beta)
+            output,_ = run_snn(x_local.to_dense(), val_enc_data['batch_size'], nb_hidden, nb_steps, params, alpha, beta)
             m,_ = torch.max(output,1) # max over time
             _, am = torch.max(m,1)      # argmax over output units
             tmp = np.mean((y_local==am).detach().cpu().numpy()) # compare to labels
@@ -69,11 +69,11 @@ def train(encoded_data, val_enc_data, nb_hidden, params, alpha, beta, lr=2e-3, n
       return loss_hist, train_acc, val_acc, w_traj
     return loss_hist, train_acc, val_acc
     
-def compute_classification_accuracy(encoded_data, nb_hidden, params, alpha, beta):
+def compute_classification_accuracy(encoded_data, nb_hidden, nb_steps, params, alpha, beta):
     """ Computes classification accuracy on supplied data in batches. """
     accs = []
     for x_local, y_local in sparse_generator(encoded_data, shuffle=False):
-        output,_ = run_snn(x_local.to_dense(), encoded_data['batch_size'], nb_hidden, params, alpha, beta)
+        output,_ = run_snn(x_local.to_dense(), encoded_data['batch_size'], nb_hidden, nb_steps, params, alpha, beta)
         m,_= torch.max(output,1) # max over time
         _, am = torch.max(m,1)      # argmax over output units
         tmp = np.mean((y_local==am).detach().cpu().numpy()) # compare to labels
