@@ -5,6 +5,9 @@ import torch.nn as nn
 import torchvision as tv
 from .torch_device import device, dtype
 from .surrogate_model import run_snn
+from .surrogate_encoder import encode_data
+from .sparse_data_generator import sparse_generator
+
 
 def train(encoded_data, val_enc_data, nb_hidden, params, alpha, beta, lr=2e-3, nb_epochs=10, return_weights=False):
     optimizer = torch.optim.Adam(params, lr=lr, betas=(0.9,0.999))
