@@ -1,4 +1,5 @@
 import torch
+from .torch_device import device, dtype
 
 class SurrGradSpike(torch.autograd.Function):
     """
