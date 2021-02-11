@@ -3,6 +3,11 @@ import numpy as np
 import torch
 import torchvision as tv
 
+def rgb2gray(rgb):
+    r, g, b = rgb[:,:,:,0], rgb[:,:,:,1], rgb[:,:,:,2]
+    gray = 0.2989 * r + 0.5870 * g + 0.1140 * b
+    return gray
+
 def load_mnist():
     root_mnist = os.path.expanduser("~/data/datasets/torch/mnist")
     
@@ -22,7 +27,30 @@ def load_mnist():
     
     
     return {'x_train': x_train_mnist, 'x_test': x_test_mnist,
-            'y_train': y_train_mnist, 'y_test':y_test_mnist}
+            'y_train': y_train_mnist, 'y_test':y_test_mnist,
+            'train_dataset': train_mnist_dataset, 'test_dataset': test_mnist_dataset}
+
+def load_cifar10_gray():
+    root_cifar = os.path.expanduser("~/data/datasets/torch/cifar")
+    
+    train_cifar_dataset = tv.datasets.CIFAR10(root_cifar, train=True, transform=None,
+                                                       target_transform=None, download=True)
+    test_cifar_dataset = tv.datasets.CIFAR10(root_cifar, train=False, transform=None, 
+                                                      target_transform=None, download=True)
+    
+    x_train_cifar = np.array(rgb2gray(train_cifar_dataset.data), dtype=np.float)
+    x_train_cifar = x_train_cifar.reshape(x_train_cifar.shape[0],-1)/255
+    
+    x_test_cifar = np.array(rgb2gray(test_cifar_dataset.data), dtype=np.float)
+    x_test_cifar = x_test_cifar.reshape(x_test_cifar.shape[0],-1)/255
+    
+    y_train_cifar = np.array(train_cifar_dataset.targets, dtype=np.int)
+    y_test_cifar  = np.array(test_cifar_dataset.targets, dtype=np.int)
+    
+    return {'x_train': x_train_cifar, 'x_test': x_test_cifar,
+            'y_train': y_train_cifar, 'y_test':y_test_cifar,
+            'train_dataset': train_cifar_dataset, 'test_dataset': test_cifar_dataset}
+    
 
 if __name__ == '__main__':
     load_mnist()
