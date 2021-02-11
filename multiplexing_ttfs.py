@@ -1,4 +1,5 @@
 import numpy as np
+from .ttfs import TTFS_encoder
 
 def multiplexing_encoding_TTFS_phase(X, tau=20, grouping_size=None, smo_freq=200, TMAX=150, 
                                      return_TTFS=False, sorted_spikes=True):

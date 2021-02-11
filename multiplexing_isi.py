@@ -1,4 +1,5 @@
 import numpy as np
+from .isi import ISI_encoding
 
 def multiplexing_encoding_ISI_phase(X, N_ISI=3, grouping_size=None, smo_freq=200, TMAX=120, max_num_spike=None, 
                                     return_ISI=False, x_max=255, x_offset=0, sorted_spikes=True, chunks=1, with_reshape=True):
