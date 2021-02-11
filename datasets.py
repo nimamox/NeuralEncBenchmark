@@ -23,3 +23,5 @@ def load_mnist():
             'y_train': y_train_mnist, 'y_test':y_test_mnist}
 
 
+def alaki():
+    return "salam"
