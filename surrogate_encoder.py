@@ -3,6 +3,10 @@ import torch
 import torch.nn as nn
 import torchvision as tv
 from .torch_device import device, dtype
+from .ttfs import TTFS_encoder
+from .isi import ISI_encoding
+from .multiplexing_ttfs import multiplexing_encoding_TTFS_phase
+from .multiplexing_isi import multiplexing_encoding_ISI_phase
 
 def encode_data(X, y, batch_size, nb_units, encoder_type = "TTFS", nb_steps=1000, TMAX=100, 
                           ISI_N=3, scaling_factor=255, tau=20, group_size=None, 
