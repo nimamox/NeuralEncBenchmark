@@ -78,10 +78,7 @@ def compute_classification_accuracy(encoded_data, nb_hidden, params, alpha, beta
         accs.append(tmp)
     return np.mean(accs)
 
-def init_model(nb_inputs, nb_hidden, nb_output, time_step, tau_mem = 10e-3, tau_syn = 5e-3):
-    global alpha, beta
-    global w1, w2
-
+def init_model(nb_inputs, nb_hidden, nb_outputs, time_step, tau_mem = 10e-3, tau_syn = 5e-3):
     alpha   = float(np.exp(-time_step/tau_syn))
     beta    = float(np.exp(-time_step/tau_mem))
 
