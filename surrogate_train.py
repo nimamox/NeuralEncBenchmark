@@ -21,8 +21,8 @@ def train(encoded_data, val_enc_data, nb_steps, params, alpha, beta, lr=2e-3, nb
     val_acc = []
     w_traj = []
     
-    nb_hidden = params[1].shape[0]
-    nb_outputs = params[1].shape[1]
+    #nb_hidden = params[1].shape[0]
+    #nb_outputs = params[1].shape[1]
 
     for e in range(nb_epochs):
         local_loss = []
@@ -41,35 +41,23 @@ def train(encoded_data, val_enc_data, nb_steps, params, alpha, beta, lr=2e-3, nb
         loss_hist.append(mean_loss)
 
         if return_weights:
-          w_traj.append({'w1': w1.detach().clone(),
-                         'w2': w2.detach().clone()})
+            w_traj.append({'w1': params[0].detach().clone(),
+                           'w2': params[1].detach().clone()})
 
         with torch.no_grad():
-          # # Train accuracy
-          # accs = []
-          # for x_local, y_local in sparse_generator(encoded_data):
-          #   output,_ = run_snn(x_local.to_dense(), encoded_data['batch_size'], nb_hidden, nb_steps, params, alpha, beta)
-          #   m,_ = torch.max(output,1) # max over time
-          #   _, am = torch.max(m,1)      # argmax over output units
-          #   tmp = np.mean((y_local==am).detach().cpu().numpy()) # compare to labels
-          #   accs.append(tmp)
-          # mean_acc = np.mean(accs)
-          # train_acc.append(mean_acc)
-          # print("\tTRAIN:{:.4f}".format(mean_acc))
-
-          # Validation accuracy
-          accs = []
-          for x_local, y_local in sparse_generator(val_enc_data):
-            output,_ = run_snn(x_local.to_dense(), val_enc_data['batch_size'], nb_steps, params, alpha, beta)
-            m,_ = torch.max(output,1) # max over time
-            _, am = torch.max(m,1)      # argmax over output units
-            tmp = np.mean((y_local==am).detach().cpu().numpy()) # compare to labels
-            accs.append(tmp)
-          mean_acc = np.mean(accs)
-          val_acc.append(mean_acc)
-          print("\tVALID:{:.4f}".format(mean_acc))
+            # Validation accuracy
+            accs = []
+            for x_local, y_local in sparse_generator(val_enc_data):
+                output,_ = run_snn(x_local.to_dense(), val_enc_data['batch_size'], nb_steps, params, alpha, beta)
+                m,_ = torch.max(output,1) # max over time
+                _, am = torch.max(m,1)      # argmax over output units
+                tmp = np.mean((y_local==am).detach().cpu().numpy()) # compare to labels
+                accs.append(tmp)
+            mean_acc = np.mean(accs)
+            val_acc.append(mean_acc)
+            print("\tVALID:{:.4f}".format(mean_acc))
     if return_weights:
-      return loss_hist, train_acc, val_acc, w_traj
+        return loss_hist, train_acc, val_acc, w_traj
     return loss_hist, train_acc, val_acc
     
 def compute_classification_accuracy(encoded_data, nb_steps, params, alpha, beta):
