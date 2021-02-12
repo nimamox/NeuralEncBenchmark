@@ -41,24 +41,24 @@ def gen_encoded(x_train, y_train, x_test, y_test, encoder_type, grp_size, div_da
 
     trn_d = encode_data(x_train[mask,:].reshape(-1, 784), y_train[mask], 
                         nb_units=nb_unites, 
-                      encoder_type=encoder_type, 
-                  group_size=grp_size,
+                        encoder_type=encoder_type, 
+                      group_size=grp_size,
                   batch_size=512, 
                   nb_steps=nb_steps, 
                   TMAX=100)
 
     val_d = encode_data(x_train[~mask,:].reshape(-1, 784), y_train[~mask], 
                         nb_units=nb_unites, 
-                      encoder_type=encoder_type, 
-                  group_size=grp_size,
+                        encoder_type=encoder_type, 
+                      group_size=grp_size,
                   batch_size=1024, 
                   nb_steps=nb_steps, 
                   TMAX=100)
 
     test_d = encode_data(x_test, y_test, 
                          nb_units=nb_unites, 
-                       encoder_type=encoder_type, 
-                  group_size=grp_size,
+                         encoder_type=encoder_type, 
+                       group_size=grp_size,
                   batch_size=1024, 
                   nb_steps=nb_steps, 
                   TMAX=100)
@@ -95,7 +95,7 @@ for c in confs:
     random.seed(c['seed'])
 
     trn_d, val_d, test_d = gen_encoded(dataset['x_train'], dataset['y_train'], dataset['x_test'], dataset['y_test'], 
-                                     c['enc'], c['gs'], div_data, c['nb_steps'])
+                                       c['enc'], c['gs'], div_data, c['nb_steps'])
 
     print(c['dataset'])
     print('Encoder: {}, group_size: {}, lr: {}, nb_steps: {}'.format(c['enc'], c['gs'], c['lr'], c['nb_steps']))
@@ -108,23 +108,23 @@ for c in confs:
     print("#weights:", total_weights)
 
     loss_hist, train_acc, val_acc, w_traj = train(trn_d, val_d, c['nb_steps'], params, alpha, beta, 
-                                                lr=c['lr'], nb_epochs=epochs, return_weights=True)
+                                                  lr=c['lr'], nb_epochs=epochs, return_weights=True)
     test_acc = compute_classification_accuracy(test_d, c['nb_steps'], params, alpha, beta)
     print("Test accuracy: %.3f" % test_acc)
 
     fpath = 'SG_{}__{}__gs{}_i{}_h{}_tot{}__epochs{}_lr{}_div{}_nbs{}_ts{}__seed{}.h'.format(
-      'MNIST', c['enc'].replace('+', '_'), c['gs'], nb_inputs, nb_hidden, total_weights, epochs, 
+        'MNIST', c['enc'].replace('+', '_'), c['gs'], nb_inputs, nb_hidden, total_weights, epochs, 
       str(c['lr']).replace('.', '_'), div_data, c['nb_steps'], time_step, c['seed']
-  )
+    )
     with open(fpath, 'wb') as fo:
         pickle.dump({
-            'train_acc': train_acc,
-            'val_acc': val_acc,
-            'test_acc': test_acc,
-            'w1_shape': list(params[0].shape),
-            'w2_shape': list(params[0].shape),
-            'numel': w1.numel() + w2.numel(),
-            'params': params,
-            'w_traj': w_traj,
-        }, fo, protocol=pickle.HIGHEST_PROTOCOL)
+          'train_acc': train_acc,
+          'val_acc': val_acc,
+          'test_acc': test_acc,
+          'w1_shape': list(params[0].shape),
+          'w2_shape': list(params[1].shape),
+          'numel': params[0].numel() + params[1].numel(),
+          'params': params,
+          'w_traj': w_traj,
+          }, fo, protocol=pickle.HIGHEST_PROTOCOL)
     print(fpath)
