@@ -28,7 +28,7 @@ from NeuralEncBenchmark.surrogate_train import init_model, compute_classificatio
 
 print(device)
 
-def gen_encoded(x_train, y_train, x_test, y_test, encoder_type, grp_size, div_data, nb_steps):
+def gen_encoded(x_train, y_train, x_test, y_test, encoder_type, grp_size, div_data, nb_steps, TMAX=100, x_max_ISI=255, x_offset_ISI=0):
     if encoder_type not in ['TTFS', 'ISI', 'Phase+TTFS', 'Phase+ISI']:
         raise Exception('Incorrect encoder type')
     if grp_size:
@@ -45,7 +45,9 @@ def gen_encoded(x_train, y_train, x_test, y_test, encoder_type, grp_size, div_da
                       group_size=grp_size,
                   batch_size=512, 
                   nb_steps=nb_steps, 
-                  TMAX=100)
+                  TMAX=TMAX, 
+                  x_max_ISI=x_max_ISI, 
+                  x_offset_ISI=x_offset_ISI)
 
     val_d = encode_data(x_train[~mask,:].reshape(-1, 784), y_train[~mask], 
                         nb_units=nb_unites, 
@@ -53,7 +55,9 @@ def gen_encoded(x_train, y_train, x_test, y_test, encoder_type, grp_size, div_da
                       group_size=grp_size,
                   batch_size=1024, 
                   nb_steps=nb_steps, 
-                  TMAX=100)
+                  TMAX=TMAX, 
+                  x_max_ISI=x_max_ISI, 
+                  x_offset_ISI=x_offset_ISI)
 
     test_d = encode_data(x_test, y_test, 
                          nb_units=nb_unites, 
@@ -61,7 +65,9 @@ def gen_encoded(x_train, y_train, x_test, y_test, encoder_type, grp_size, div_da
                        group_size=grp_size,
                   batch_size=1024, 
                   nb_steps=nb_steps, 
-                  TMAX=100)
+                  TMAX=TMAX, 
+                  x_max_ISI=x_max_ISI, 
+                  x_offset_ISI=x_offset_ISI)
     return trn_d, val_d, test_d
 
 confs = (
@@ -71,7 +77,7 @@ confs = (
     # {'gs': 4,  'enc': 'Phase+ISI', 'nb_steps': 1000, 'lr': .0002, 'dataset': 'MNIST', 'seed': 1234},
 )
 
-epochs = 25
+epochs = 30
 time_step = .001
 div_data = 5
 
@@ -93,9 +99,12 @@ for c in confs:
     torch.manual_seed(c['seed'])
     np.random.seed(c['seed'])
     random.seed(c['seed'])
-
+    
+    tmx = c.get('tmx', 100)
+    misi = c.get('misi', 255)
+    oisi = c.get('oisi', 0)
     trn_d, val_d, test_d = gen_encoded(dataset['x_train'], dataset['y_train'], dataset['x_test'], dataset['y_test'], 
-                                       c['enc'], c['gs'], div_data, c['nb_steps'])
+                                       c['enc'], c['gs'], div_data, c['nb_steps'], TMAX=tmx, x_max_ISI=misi, x_offset_ISI=oisi)
 
     print(c['dataset'])
     print('Encoder: {}, group_size: {}, lr: {}, nb_steps: {}'.format(c['enc'], c['gs'], c['lr'], c['nb_steps']))
@@ -112,9 +121,9 @@ for c in confs:
     test_acc = compute_classification_accuracy(test_d, c['nb_steps'], params, alpha, beta)
     print("Test accuracy: %.3f" % test_acc)
 
-    fpath = 'SG_{}__{}__gs{}_i{}_h{}_tot{}__epochs{}_lr{}_div{}_nbs{}_ts{}__seed{}.h'.format(
-        'MNIST', c['enc'].replace('+', '_'), c['gs'], nb_inputs, nb_hidden, total_weights, epochs, 
-      str(c['lr']).replace('.', '_'), div_data, c['nb_steps'], time_step, c['seed']
+    fpath = 'SSG_{}__{}__gs{}_i{}_h{}_tot{}__epochs{}_lr{}_div{}_nbs{}_ts{}__seed{}_tmx{}_misi{}_oisi{}.h'.format(
+        'MNIST', c['enc'].replace('+', ''), c['gs'], nb_inputs, nb_hidden, total_weights, epochs, 
+      str(c['lr']).replace('.', '_'), div_data, c['nb_steps'], time_step, c['seed'], tmx, misi, oisi
     )
     with open(fpath, 'wb') as fo:
         pickle.dump({
@@ -126,5 +135,16 @@ for c in confs:
           'numel': params[0].numel() + params[1].numel(),
           'params': params,
           'w_traj': w_traj,
+          'ENC': c['enc'],
+          'GS': c['gs'],
+          'epochs': epochs,
+          'LR': c['lr'],
+          'div_data': div_data,
+          'nb_steps': c['nb_steps'],
+          'time_step': time_step,
+          'seed': c['seed'],
+          'tmx': tmx,
+          'misi': misi,
+          'oisi': oisi
           }, fo, protocol=pickle.HIGHEST_PROTOCOL)
     print(fpath)
