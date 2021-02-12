@@ -12,18 +12,18 @@ import pickle
 import random
 import time
 
-from .ttfs import TTFS_encoder
-from .isi import ISI_encoding
-from .multiplexing_ttfs import multiplexing_encoding_TTFS_phase
-from .multiplexing_isi import multiplexing_encoding_ISI_phase
-from .datasets import *
+from ttfs import TTFS_encoder
+from isi import ISI_encoding
+from multiplexing_ttfs import multiplexing_encoding_TTFS_phase
+from multiplexing_isi import multiplexing_encoding_ISI_phase
+from datasets import *
 
-from .torch_device import dtype, device
-from .sparse_data_generator import sparse_generator
-from .surrogate_encoder import encode_data
+from torch_device import dtype, device
+from sparse_data_generator import sparse_generator
+from surrogate_encoder import encode_data
 
-from .surrogate_model import run_snn
-from .surrogate_train import init_model, compute_classification_accuracy, train
+from surrogate_model import run_snn
+from surrogate_train import init_model, compute_classification_accuracy, train
 
 print(device)
 
