@@ -9,7 +9,7 @@ from .multiplexing_ttfs import multiplexing_encoding_TTFS_phase
 from .multiplexing_isi import multiplexing_encoding_ISI_phase
 
 def encode_data(X, y, batch_size, nb_units, encoder_type = "TTFS", nb_steps=1000, TMAX=100, 
-                          ISI_N=3, scaling_factor=255, tau=20, group_size=None, 
+                          ISI_N=3, tau=20, group_size=None, 
                           x_max_ISI=255, x_offset_ISI=0):
   labels_ = np.array(y, dtype=np.int)
   number_of_batches = len(X)//batch_size
@@ -22,14 +22,14 @@ def encode_data(X, y, batch_size, nb_units, encoder_type = "TTFS", nb_steps=1000
     # return firing_times_TTFS
     firing_times = firing_times_TTFS.reshape([X.shape[0], X.shape[1], -1])
   elif encoder_type == "ISI":
-    X = X * scaling_factor
+    X = (X * x_max_ISI) + x_offset_ISI
     unique_vals, inv = np.unique(X, return_inverse = True)
     ISI_cache = {}
     for vv in unique_vals.tolist():
       ISI_cache[vv] = ISI_encoding(vv, ISI_N)
     # return ISI_cache
 
-    tmax_ISI = np.sum(ISI_encoding(255., ISI_N))
+    tmax_ISI = np.sum(ISI_encoding(x_max_ISI+x_offset_ISI, ISI_N))
 
     firing_times_ISI = np.array([ISI_cache[xx] for xx in unique_vals])[inv].reshape([X.shape[0], X.shape[1], -1])
 
