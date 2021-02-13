@@ -71,10 +71,66 @@ def gen_encoded(x_train, y_train, x_test, y_test, encoder_type, grp_size, div_da
     return trn_d, val_d, test_d
 
 confs = (
-    {'gs': 1,  'enc': 'TTFS', 'nb_steps': 100, 'lr': .0002, 'dataset': 'MNIST', 'seed': 1234},
-    # {'gs': 1,  'enc': 'ISI', 'nb_steps': 100, 'lr': .0002, 'dataset': 'MNIST', 'seed': 1234}, 
-    # {'gs': 4,  'enc': 'Phase+TTFS', 'nb_steps': 1000, 'lr': .0002, 'dataset': 'MNIST', 'seed': 1234},
-    # {'gs': 4,  'enc': 'Phase+ISI', 'nb_steps': 1000, 'lr': .0002, 'dataset': 'MNIST', 'seed': 1234},
+  # -------
+    # {'gs': 1,  'enc': 'TTFS', 'nb_steps': 100, 'lr': .0002, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 1,  'enc': 'TTFS', 'nb_steps': 100, 'lr': .0003, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 1,  'enc': 'TTFS', 'nb_steps': 100, 'lr': .0004, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 1,  'enc': 'TTFS', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234},
+  # -------
+    # {'gs': 1,  'enc': 'ISI', 'nb_steps': 100, 'lr': .0002, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 1,  'enc': 'ISI', 'nb_steps': 100, 'lr': .0003, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 1,  'enc': 'ISI', 'nb_steps': 100, 'lr': .0004, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 1,  'enc': 'ISI', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 1,  'enc': 'ISI', 'nb_steps': 100, 'lr': .0006, 'dataset': 'MNIST', 'seed': 1234},
+  # -------
+    # {'gs': 4,  'enc': 'Phase+TTFS', 'nb_steps': 100, 'lr': .0002, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 4,  'enc': 'Phase+TTFS', 'nb_steps': 100, 'lr': .0003, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 4,  'enc': 'Phase+TTFS', 'nb_steps': 100, 'lr': .0004, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 4,  'enc': 'Phase+TTFS', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 4,  'enc': 'Phase+TTFS', 'nb_steps': 100, 'lr': .0006, 'dataset': 'MNIST', 'seed': 1234},
+  # -------
+    # {'gs': 4,  'enc': 'Phase+ISI', 'nb_steps': 100, 'lr': .0002, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 4,  'enc': 'Phase+ISI', 'nb_steps': 100, 'lr': .0003, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 4,  'enc': 'Phase+ISI', 'nb_steps': 100, 'lr': .0004, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 4,  'enc': 'Phase+ISI', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 4,  'enc': 'Phase+ISI', 'nb_steps': 100, 'lr': .0006, 'dataset': 'MNIST', 'seed': 1234},
+  # -------
+    # {'gs': 8,  'enc': 'Phase+ISI', 'nb_steps': 100, 'lr': .0002, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 8,  'enc': 'Phase+ISI', 'nb_steps': 100, 'lr': .0003, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 8,  'enc': 'Phase+ISI', 'nb_steps': 100, 'lr': .0004, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 8,  'enc': 'Phase+ISI', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 8,  'enc': 'Phase+ISI', 'nb_steps': 100, 'lr': .0006, 'dataset': 'MNIST', 'seed': 1234},
+  # -------
+    # {'gs': 8,  'enc': 'Phase+TTFS', 'nb_steps': 100, 'lr': .0002, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 8,  'enc': 'Phase+TTFS', 'nb_steps': 100, 'lr': .0003, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 8,  'enc': 'Phase+TTFS', 'nb_steps': 100, 'lr': .0004, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 8,  'enc': 'Phase+TTFS', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 8,  'enc': 'Phase+TTFS', 'nb_steps': 100, 'lr': .0006, 'dataset': 'MNIST', 'seed': 1234},
+  # -------
+    # {'gs': 16,  'enc': 'Phase+TTFS', 'nb_steps': 100, 'lr': .0002, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 16,  'enc': 'Phase+TTFS', 'nb_steps': 100, 'lr': .0003, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 16,  'enc': 'Phase+TTFS', 'nb_steps': 100, 'lr': .0004, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 16,  'enc': 'Phase+TTFS', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234},
+    # {'gs': 16,  'enc': 'Phase+TTFS', 'nb_steps': 100, 'lr': .0006, 'dataset': 'MNIST', 'seed': 1234},
+  # -------
+    # {'gs': 1,  'enc': 'ISI', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234, 'nb_hidden': 5},
+    # {'gs': 1,  'enc': 'ISI', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234, 'nb_hidden': 10},
+    # {'gs': 1,  'enc': 'ISI', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234, 'nb_hidden': 15},
+    # {'gs': 1,  'enc': 'ISI', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234, 'nb_hidden': 20},
+    # {'gs': 1,  'enc': 'ISI', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234, 'nb_hidden': 30},
+    # {'gs': 1,  'enc': 'ISI', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234, 'nb_hidden': 45},
+    # {'gs': 1,  'enc': 'ISI', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234, 'nb_hidden': 50},
+  # -------
+    # {'gs': 4,  'enc': 'Phase+ISI', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234, 'nb_hidden': 10},
+    # {'gs': 8,  'enc': 'Phase+ISI', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234, 'nb_hidden': 10},
+    # {'gs': 4,  'enc': 'Phase+ISI', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234, 'nb_hidden': 50},
+    # {'gs': 8,  'enc': 'Phase+ISI', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234, 'nb_hidden': 50},
+    # {'gs': 4,  'enc': 'Phase+ISI', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234, 'nb_hidden': 150},
+    # {'gs': 8,  'enc': 'Phase+ISI', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234, 'nb_hidden': 150},
+    # {'gs': 4,  'enc': 'Phase+ISI', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234, 'nb_hidden': 200},
+    # {'gs': 8,  'enc': 'Phase+ISI', 'nb_steps': 100, 'lr': .0005, 'dataset': 'MNIST', 'seed': 1234, 'nb_hidden': 200},
+  # -------
+    {'gs': 1,  'enc': 'ISI', 'nb_steps': 100, 'lr': .001, 'dataset': 'MNIST', 'seed': 1234},
 )
 
 epochs = 30
@@ -93,7 +149,13 @@ for c in confs:
         raise Exception('Wrong database name')
     print('*'* 20)
     nb_inputs  = int(dataset['x_train'].shape[1]/c['gs'])
-    nb_hidden  = int(25*c['gs'])
+    if not c.get('nb_hidden', False):
+        nb_hidden  = int(25*c['gs'])
+    else:
+        nb_hidden = c['nb_hidden']
+    regularization_f = 0
+    if not c.get('reg', False):
+        regularization_f = c['reg']
     nb_outputs = 10
 
     torch.manual_seed(c['seed'])
@@ -107,7 +169,9 @@ for c in confs:
                                        c['enc'], c['gs'], div_data, c['nb_steps'], TMAX=tmx, x_max_ISI=misi, x_offset_ISI=oisi)
 
     print(c['dataset'])
-    print('Encoder: {}, group_size: {}, lr: {}, nb_steps: {}'.format(c['enc'], c['gs'], c['lr'], c['nb_steps']))
+    print('Encoder: {}, group_size: {}, lr: {}, nb_steps: {}, nb_hidden: {}'.format(c['enc'], c['gs'], c['lr'], c['nb_steps'], nb_hidden))
+    if 'ISI' in c['enc']:
+        print('tmx: {}, misi: {}, oisi: {}'.format(tmx, misi, oisi))
 
     # print('CUDA MEM:')
     params, alpha, beta = init_model(nb_inputs, nb_hidden, nb_outputs, time_step ) #TODO: tau_mem and tau_syn
@@ -121,13 +185,14 @@ for c in confs:
     test_acc = compute_classification_accuracy(test_d, c['nb_steps'], params, alpha, beta)
     print("Test accuracy: %.3f" % test_acc)
 
-    fpath = 'SSG_{}__{}__gs{}_i{}_h{}_tot{}__epochs{}_lr{}_div{}_nbs{}_ts{}__seed{}_tmx{}_misi{}_oisi{}.h'.format(
+    fpath = 'SSG_{}__{}__gs{}_i{}_h{}_tot{}__epochs{}_lr{}_div{}_nbs{}_ts{}__seed{}_tmx{}_misi{}_oisi{}_reg{}.h'.format(
         'MNIST', c['enc'].replace('+', ''), c['gs'], nb_inputs, nb_hidden, total_weights, epochs, 
-      str(c['lr']).replace('.', '_'), div_data, c['nb_steps'], time_step, c['seed'], tmx, misi, oisi
+      str(c['lr']).replace('.', '_'), div_data, c['nb_steps'], time_step, c['seed'], tmx, misi, oisi, regularization_f
     )
-    with open(fpath, 'wb') as fo:
+    with open('SurrGradResults/' + fpath, 'wb') as fo:
         pickle.dump({
           'train_acc': train_acc,
+          'loss_hist': loss_hist,
           'val_acc': val_acc,
           'test_acc': test_acc,
           'w1_shape': list(params[0].shape),
@@ -145,6 +210,8 @@ for c in confs:
           'seed': c['seed'],
           'tmx': tmx,
           'misi': misi,
-          'oisi': oisi
+          'oisi': oisi,
+          'reg': regularization_f,
           }, fo, protocol=pickle.HIGHEST_PROTOCOL)
+        fo.flush()
     print(fpath)

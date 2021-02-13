@@ -9,7 +9,7 @@ from .surrogate_encoder import encode_data
 from .sparse_data_generator import sparse_generator
 
 
-def train(encoded_data, val_enc_data, nb_steps, params, alpha, beta, lr=2e-3, nb_epochs=10, return_weights=False):
+def train(encoded_data, val_enc_data, nb_steps, params, alpha, beta, lr=2e-3, nb_epochs=10, return_weights=False, regularization_factor=0):
     optimizer = torch.optim.Adam(params, lr=lr, betas=(0.9,0.999))
 
     log_softmax_fn = nn.LogSoftmax(dim=1)
@@ -27,10 +27,16 @@ def train(encoded_data, val_enc_data, nb_steps, params, alpha, beta, lr=2e-3, nb
     for e in range(nb_epochs):
         local_loss = []
         for x_local, y_local in sparse_generator(encoded_data):
-            output,_ = run_snn(x_local.to_dense(), encoded_data['batch_size'], nb_steps, params, alpha, beta)
-            m,_=torch.max(output,1)
+            output, recs = run_snn(x_local.to_dense(), encoded_data['batch_size'], nb_steps, params, alpha, beta)
+            _, spks = recs
+            m, _ = torch.max(output,1)
             log_p_y = log_softmax_fn(m)
             loss_val = loss_fn(log_p_y, y_local)
+            
+            if regularization_factor:
+                reg_loss = regularization_factor*torch.sum(spks) # L1 loss on total number of spikes
+                reg_loss += regularization_factor*torch.mean(torch.sum(torch.sum(spks,dim=0),dim=0)**2) # L2 loss on spikes per neuron
+                loss_val += reg_loss
 
             optimizer.zero_grad()
             loss_val.backward()
