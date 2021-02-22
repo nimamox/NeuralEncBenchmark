@@ -25,7 +25,7 @@ def sparse_generator(d, shuffle=True):
 
         coo = [ [] for i in range(3) ]
         for bc, idx in enumerate(batch_index):
-            c = 0<=firing_times[idx]<nb_steps
+            c = np.logical_and(0<=firing_times[idx], firing_times[idx]<nb_steps)
             for cc in range(c.shape[1]):
               # import pdb; pdb.set_trace()
               times, units = firing_times[idx][c[:,cc], cc], unit_numbers[c[:,cc]]
