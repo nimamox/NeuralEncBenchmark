@@ -7,6 +7,7 @@ from .ttfs import TTFS_encoder
 from .isi import ISI_encoding
 from .multiplexing_ttfs import multiplexing_encoding_TTFS_phase
 from .multiplexing_isi import multiplexing_encoding_ISI_phase
+import pickle
 
 def encode_data(X, y, batch_size, nb_units, encoder_type = "TTFS", nb_steps=1000, TMAX=100, 
                           ISI_N=3, tau=20, group_size=None, 
@@ -16,7 +17,9 @@ def encode_data(X, y, batch_size, nb_units, encoder_type = "TTFS", nb_steps=1000
   sample_index = np.arange(len(X))
 
   # compute discrete firing times
-  if encoder_type == "TTFS":
+  if encoder_type is None:
+    firing_times = X
+  elif encoder_type == "TTFS":
     firing_times_TTFS = np.array(TTFS_encoder(X, tau=tau, tmax=TMAX) / (TMAX / nb_steps), dtype=np.int)
     # firing_times_TTFS = np.array(TTFS_encoder(X, tau=tau, tmax=TMAX), dtype=np.int)
     # return firing_times_TTFS
@@ -51,6 +54,7 @@ def encode_data(X, y, batch_size, nb_units, encoder_type = "TTFS", nb_steps=1000
     firing_times = firing_times_Mult_ISI 
   else:
     raise Exception
+  
 
   # firing_times = firing_times.reshape([X.shape[0], X.shape[1], -1])
   # print('~'*10, firing_times.shape[1], nb_units)
