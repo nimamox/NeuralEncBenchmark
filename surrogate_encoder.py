@@ -11,7 +11,7 @@ import pickle
 
 def encode_data(X, y, batch_size, nb_units, encoder_type = "TTFS", nb_steps=1000, TMAX=100, 
                           ISI_N=3, tau=20, group_size=None, 
-                          x_max_ISI=255, x_offset_ISI=0):
+                          x_max_ISI=255, x_offset_ISI=0, invert_ISI=False):
   labels_ = np.array(y, dtype=np.int)
   number_of_batches = len(X)//batch_size
   sample_index = np.arange(len(X))
@@ -38,6 +38,10 @@ def encode_data(X, y, batch_size, nb_units, encoder_type = "TTFS", nb_steps=1000
 
     # Transform distances to exact times
     firing_times_ISI = np.cumsum(firing_times_ISI, axis=2)
+    
+    # Modified (inverse) ISI, making it more similar to TTFS
+    if invert_ISI:
+      firing_times_ISI = tmax_ISI - firing_times_ISI
     
     # Scaling firing times 
     firing_times_ISI = firing_times_ISI / tmax_ISI * nb_steps
