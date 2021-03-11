@@ -11,7 +11,7 @@ import pickle
 
 def encode_data(X, y, batch_size, nb_units, encoder_type = "TTFS", nb_steps=1000, TMAX=100, 
                           ISI_N=3, tau=20, group_size=None, 
-                          x_max_ISI=255, x_offset_ISI=0):
+                          x_max_ISI=255, x_offset_ISI=0, smo_freq=200):
   labels_ = np.array(y, dtype=np.int)
   number_of_batches = len(X)//batch_size
   sample_index = np.arange(len(X))
@@ -44,18 +44,18 @@ def encode_data(X, y, batch_size, nb_units, encoder_type = "TTFS", nb_steps=1000
       firing_times_ISI = tmax_ISI - firing_times_ISI
     
     # Scaling firing times 
-    firing_times_ISI = firing_times_ISI / tmax_ISI * nb_steps
+    firing_times_ISI = firing_times_ISI / (float(tmax_ISI) * nb_steps)
     
     firing_times_ISI = np.array(firing_times_ISI, dtype=np.int)
     firing_times = firing_times_ISI.reshape([X.shape[0], X.shape[1], -1])
   elif encoder_type == "Phase+TTFS":
     firing_times_Mult_TTFS = np.array(multiplexing_encoding_TTFS_phase(X, grouping_size=group_size, 
-                                                              TMAX=TMAX) / (TMAX / nb_steps), dtype=np.int)
+                                                  TMAX=TMAX, smo_freq=smo_freq) / (TMAX / nb_steps), dtype=np.int)
     firing_times = firing_times_Mult_TTFS 
   elif encoder_type.startswith("Phase+ISI"):
     inverse = (encoder_type == "Phase+ISI_inverse")
     firing_times_Mult_ISI = np.array(multiplexing_encoding_ISI_phase(X, grouping_size=group_size, x_max=x_max_ISI, chunks=20,
-                         x_offset=x_offset_ISI, TMAX=TMAX, inverse=inverse) / (TMAX / nb_steps), dtype=np.int)
+                         x_offset=x_offset_ISI, TMAX=TMAX, inverse=inverse, smo_freq=smo_freq) / (TMAX / nb_steps), dtype=np.int)
     firing_times = firing_times_Mult_ISI 
   else:
     raise Exception
