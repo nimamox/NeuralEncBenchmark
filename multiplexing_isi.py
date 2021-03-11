@@ -20,10 +20,12 @@ def multiplexing_encoding_ISI_phase(X, N_ISI=3, grouping_size=None, smo_freq=200
     D_ISI = np.array([ISI_cache[xx] for xx in unique_vals])[inv].reshape([X.shape[0], X.shape[1], -1])
     max_T = np.cumsum(ISI_encoding(x_offset+x_max, N_ISI))[-1]
     
+    TT = np.cumsum(D_ISI, axis=2)
+    
     if inverse:
         TT = max_T - TT
 
-    TT = np.clip(np.cumsum(D_ISI, axis=2) * TMAX / max_T, 0, TMAX-SMO_interval)
+    TT = np.clip(TT * TMAX / max_T, 0, TMAX-SMO_interval)
 
     if max_num_spike is not None:
         max_num_spike = min(max_num_spike, TT.shape[1])
