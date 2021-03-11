@@ -44,7 +44,7 @@ def encode_data(X, y, batch_size, nb_units, encoder_type = "TTFS", nb_steps=1000
       firing_times_ISI = tmax_ISI - firing_times_ISI
     
     # Scaling firing times 
-    firing_times_ISI = firing_times_ISI / tmax_ISI * nb_steps
+    firing_times_ISI = firing_times_ISI / (tmax_ISI * nb_steps)
     
     firing_times_ISI = np.array(firing_times_ISI, dtype=np.int)
     firing_times = firing_times_ISI.reshape([X.shape[0], X.shape[1], -1])
@@ -53,8 +53,9 @@ def encode_data(X, y, batch_size, nb_units, encoder_type = "TTFS", nb_steps=1000
                                                               TMAX=TMAX) / (TMAX / nb_steps), dtype=np.int)
     firing_times = firing_times_Mult_TTFS 
   elif encoder_type.startswith("Phase+ISI"):
+    inverse = (encoder_type == "Phase+ISI_inverse")
     firing_times_Mult_ISI = np.array(multiplexing_encoding_ISI_phase(X, grouping_size=group_size, x_max=x_max_ISI, chunks=20,
-                         x_offset=x_offset_ISI, TMAX=TMAX) / (TMAX / nb_steps), dtype=np.int)
+                         x_offset=x_offset_ISI, TMAX=TMAX, inverse=inverse) / (TMAX / nb_steps), dtype=np.int)
     firing_times = firing_times_Mult_ISI 
   else:
     raise Exception

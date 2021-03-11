@@ -1,8 +1,9 @@
 import numpy as np
 from .isi import ISI_encoding
 
-def multiplexing_encoding_ISI_phase(X, N_ISI=3, grouping_size=None, smo_freq=200, TMAX=120, max_num_spike=None, 
-                                    return_ISI=False, x_max=255, x_offset=0, sorted_spikes=True, chunks=1, with_reshape=True):
+def multiplexing_encoding_ISI_phase(X, N_ISI=3, grouping_size=None, smo_freq=200, TMAX=120, 
+                                    max_num_spike=None, return_ISI=False, x_max=255, x_offset=0, 
+                                    sorted_spikes=True, chunks=1, with_reshape=True, inverse=False):
     # For very large X matrices increase `chunks` to split the alignment work into `chunks` portions,
     # otherwise it takes too much RAM and might crash!
     if X.ndim != 2:
@@ -18,6 +19,9 @@ def multiplexing_encoding_ISI_phase(X, N_ISI=3, grouping_size=None, smo_freq=200
 
     D_ISI = np.array([ISI_cache[xx] for xx in unique_vals])[inv].reshape([X.shape[0], X.shape[1], -1])
     max_T = np.cumsum(ISI_encoding(x_offset+x_max, N_ISI))[-1]
+    
+    if inverse:
+        TT = max_T - TT
 
     TT = np.clip(np.cumsum(D_ISI, axis=2) * TMAX / max_T, 0, TMAX-SMO_interval)
 
