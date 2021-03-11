@@ -44,7 +44,7 @@ def encode_data(X, y, batch_size, nb_units, encoder_type = "TTFS", nb_steps=1000
       firing_times_ISI = tmax_ISI - firing_times_ISI
     
     # Scaling firing times 
-    firing_times_ISI = firing_times_ISI / (tmax_ISI * nb_steps)
+    firing_times_ISI = firing_times_ISI / tmax_ISI * nb_steps
     
     firing_times_ISI = np.array(firing_times_ISI, dtype=np.int)
     firing_times = firing_times_ISI.reshape([X.shape[0], X.shape[1], -1])
