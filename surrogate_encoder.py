@@ -11,7 +11,7 @@ import pickle
 
 def encode_data(X, y, batch_size, nb_units, encoder_type = "TTFS", nb_steps=1000, TMAX=100, 
                           ISI_N=3, tau=20, group_size=None, 
-                          x_max_ISI=255, x_offset_ISI=0, smo_freq=200):
+                          x_max_ISI=255, x_offset_ISI=0, smo_freq=200, external_ISI_cache=None):
   labels_ = np.array(y, dtype=np.int)
   number_of_batches = len(X)//batch_size
   sample_index = np.arange(len(X))
@@ -27,9 +27,14 @@ def encode_data(X, y, batch_size, nb_units, encoder_type = "TTFS", nb_steps=1000
   elif encoder_type.startswith("ISI"):
     X = (X * x_max_ISI) + x_offset_ISI
     unique_vals, inv = np.unique(X, return_inverse = True)
-    ISI_cache = {}
+    if external_ISI_cache is None:
+      ISI_cache = {}
+    else:
+      ISI_cache = external_ISI_cache
+      
     for vv in unique_vals.tolist():
-      ISI_cache[vv] = ISI_encoding(vv, ISI_N)
+      if vv not in ISI_cache:
+        ISI_cache[vv] = ISI_encoding(vv, ISI_N)
     # return ISI_cache
 
     tmax_ISI = np.sum(ISI_encoding(x_max_ISI+x_offset_ISI, ISI_N))
