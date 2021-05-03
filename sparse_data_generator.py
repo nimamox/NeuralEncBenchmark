@@ -4,11 +4,10 @@ import torch.nn as nn
 import torchvision as tv
 from .torch_device import device, dtype
 
-def sparse_generator(d, shuffle=True):
+def sparse_generator(d, shuffle=True, subsampling_ratio=None):
    firing_times = d['firing_times']
    nb_units = d['nb_units']
    sample_index = d['sample_index']
-   number_of_batches = d['number_of_batches']
    batch_size = d['batch_size']
    nb_steps = d['nb_steps']
    labels_ = d['labels_']
@@ -17,6 +16,11 @@ def sparse_generator(d, shuffle=True):
 
    if shuffle:
       np.random.shuffle(sample_index)
+   
+   if subsampling_ratio:
+      sample_index = sample_index[np.random.choice(len(sample_index), int(subsampling_ratio * len(sample_index)))]
+      
+   number_of_batches = int(np.ceil(sample_index.shape[0] / batch_size))
 
    counter = 0
    while counter<number_of_batches:
@@ -43,7 +47,7 @@ def sparse_generator(d, shuffle=True):
       i = torch.LongTensor(coo).to(device) # Remove spikes that overlay on eachother 
       v = torch.FloatTensor(np.ones(i.shape[1])).to(device)
 
-      X_batch = torch.sparse.FloatTensor(i, v, torch.Size([batch_size,nb_steps,nb_units])).to(device)
+      X_batch = torch.sparse.FloatTensor(i, v, torch.Size([batch_index.shape[0],nb_steps,nb_units])).to(device)
       y_batch = torch.tensor(labels_[batch_index], device=device)
       # return X_batch
       yield X_batch.to(device=device), y_batch.to(device=device)

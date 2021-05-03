@@ -74,7 +74,6 @@ def encode_data(X, y, batch_size, nb_units, encoder_type = "TTFS", nb_steps=1000
   return {'firing_times': firing_times, 
           'nb_units': nb_units,
           'sample_index': sample_index,
-          'number_of_batches': number_of_batches,
           'batch_size': batch_size,
           'nb_steps': nb_steps,
           'labels_': labels_
